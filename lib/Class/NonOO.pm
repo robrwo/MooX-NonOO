@@ -1,6 +1,6 @@
 package Class::NonOO;
 
-# ABSTRACT: Use Moo methods as functions with an implicit singleton
+# ABSTRACT: Use methods as functions with an implicit singleton
 
 use strict;
 use warnings;
@@ -20,7 +20,7 @@ use Scalar::Util qw/ blessed /;
 
 =head1 NAME
 
-Class::NonOO - Use Moo methods as functions with an implicit singleton
+Class::NonOO - Use methods as functions with an implicit singleton
 
 =for readme plugin version
 
@@ -30,7 +30,6 @@ In a module:
 
   package MyModule;
 
-  use Moo;
   use Class::NonOO;
 
   ...
