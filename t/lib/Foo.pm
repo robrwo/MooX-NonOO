@@ -1,7 +1,7 @@
 package Foo;
 
 use Moo;
-use MooX::NonOO;
+use Class::NonOO;
 
 has bar => ( is => 'rw', default => 1 );
 
