@@ -8,9 +8,10 @@ use warnings;
 use feature qw/ state /;
 
 use Exporter qw/ import /;
-
 use Package::Stash;
 use Scalar::Util qw/ blessed /;
+
+# RECOMMEND PREREQ: Package::Stash::XS 0
 
 BEGIN {
     require MooX::Singleton;
