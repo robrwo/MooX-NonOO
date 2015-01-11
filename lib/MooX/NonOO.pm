@@ -145,11 +145,6 @@ sub as_function {
 
 Robert Rothenberg, C<< <rrwo at cpan.org> >>
 
-=head2 Acknowledgements
-
-Several people who pointed out that this module is unnecessary.
-(Yes, it's written to scratch an itch.)
-
 =head1 LICENSE AND COPYRIGHT
 
 Copyright 2015 Robert Rothenberg.

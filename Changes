@@ -2,5 +2,5 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
-v0.1.0    2015-01-11 01:00:22+00:00 Europe/London
+v0.1.0    2015-01-11 01:07:06+00:00 Europe/London
   - Initial version.
