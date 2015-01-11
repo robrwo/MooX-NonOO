@@ -22,6 +22,8 @@ use Scalar::Util qw/ blessed /;
 
 MooX::NonOO - Use Moo methods as functions with an implicit singleton
 
+=for readme plugin version
+
 =head1 SYNOPSYS
 
 In a module:

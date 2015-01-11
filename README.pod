@@ -1,0 +1,117 @@
+=head1 NAME
+
+MooX::NonOO - Use Moo methods as functions with an implicit singleton
+
+=head1 VERSION
+
+v0.1.0
+
+=head1 SYNOPSYS
+
+In a module:
+
+  package MyModule;
+
+  use Moo;
+  use MooX::NonOO;
+
+  ...
+
+  sub my_method {
+     my ($self, @args) = @_;
+     ...
+  }
+
+  as_function
+    export => [ 'my_method' ], # methods to export
+    args   => [ ];             # constructor args
+
+The module can be be used with a function calling style:
+
+  use MyModule;
+
+  ...
+
+  my_method(@args);
+
+=head1 INSTALLATION
+
+See
+L<How to install CPAN modules|http://www.cpan.org/modules/INSTALL.html>.
+
+=head2 Required Modules
+
+This distribution requires Perl v5.9.3.
+
+This distribution requires the following modules:
+
+=over 4
+
+=item * L<Moo>
+
+=item * L<Package::Stash>
+
+=item * L<Test::Most>
+
+=back
+
+This distribution recommends the following modules:
+
+=over 4
+
+=item * L<Package::Stash::XS>
+
+=back
+
+=head1 RECENT CHANGES
+
+=over 4
+
+=item * 
+
+Initial version.
+
+=back
+
+See the F<Changes> file for a longer revision history.
+
+=head1 DESCRIPTION
+
+This module allows you to turn a class into a module that exports
+methods as functions that use an implicit singleton.
+
+=head1 EXPORTS
+
+=head2 C<as_function>
+
+  as_function
+    exports => \@methods,
+    args    => \@args;
+
+This wraps methods in a function that checks the first argument. If
+the argument is an instance of the class, then it assumes it is a
+normal method call.  Otherwise it assumes it is a function call, and
+it calls the method with the singleton instance.
+
+Note that this will not work properly on methods that take an instance
+of the class as the first argument.
+
+=head1 AUTHOR
+
+Robert Rothenberg, C<< <rrwo at cpan.org> >>
+
+=head2 Acknowledgements
+
+Several people who pointed out that this module is unnecessary.
+(Yes, it's written to scratch an itch.)
+
+=head1 LICENSE AND COPYRIGHT
+
+Copyright 2015 Robert Rothenberg.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the the Artistic License (2.0). You may obtain a
+copy of the full license at:
+
+L<http://www.perlfoundation.org/artistic_license_2_0>
+
