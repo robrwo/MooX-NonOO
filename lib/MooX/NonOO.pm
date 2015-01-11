@@ -50,6 +50,19 @@ The module can be be used with a function calling style:
 
   my_method(@args);
 
+=begin :readme
+
+=head1 INSTALLATION
+
+See
+L<How to install CPAN modules|http://www.cpan.org/modules/INSTALL.html>.
+
+=for readme plugin requires heading-level=2 title="Required Modules"
+
+=for readme plugin changes
+
+=end :readme
+
 =head1 DESCRIPTION
 
 This module allows you to turn a class into a module that exports
