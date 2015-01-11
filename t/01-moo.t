@@ -1,5 +1,10 @@
 use Test::Most;
 
+BEGIN {
+  eval { require Moo; }
+    or plan skip_all => 'Moo required for test';
+}
+
 use lib 't/lib';
 
 use_ok 'MooFoo';
