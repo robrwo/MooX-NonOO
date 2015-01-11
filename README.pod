@@ -1,10 +1,10 @@
 =head1 NAME
 
-MooX::NonOO - Use Moo methods as functions with an implicit singleton
+Class::NonOO - Use methods as functions with an implicit singleton
 
 =head1 VERSION
 
-v0.1.0
+v0.2.0
 
 =head1 SYNOPSYS
 
@@ -12,8 +12,7 @@ In a module:
 
   package MyModule;
 
-  use Moo;
-  use MooX::NonOO;
+  use Class::NonOO;
 
   ...
 
@@ -47,8 +46,6 @@ This distribution requires the following modules:
 
 =over 4
 
-=item * L<Moo>
-
 =item * L<Package::Stash>
 
 =item * L<Test::Most>
@@ -65,11 +62,23 @@ This distribution recommends the following modules:
 
 =head1 RECENT CHANGES
 
+=head2 Bug Fixes
+
 =over 4
 
 =item * 
 
-Initial version.
+Fixed bad code in the tests.
+
+=back
+
+=head2 Incompatible Changes
+
+=over 4
+
+=item * 
+
+Renamed module to Class::NonOO, since it does not actually require Moo.
 
 =back
 
