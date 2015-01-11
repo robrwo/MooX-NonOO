@@ -1,4 +1,4 @@
-package MooX::NonOO;
+package Class::NonOO;
 
 # ABSTRACT: Use Moo methods as functions with an implicit singleton
 
@@ -13,14 +13,14 @@ use Scalar::Util qw/ blessed /;
 
 {
     use version;
-    $MooX::NonOO::VERSION = version->declare('v0.1.0');
+    $Class::NonOO::VERSION = version->declare('v0.2.0');
 }
 
 # RECOMMEND PREREQ: Package::Stash::XS 0
 
 =head1 NAME
 
-MooX::NonOO - Use Moo methods as functions with an implicit singleton
+Class::NonOO - Use Moo methods as functions with an implicit singleton
 
 =for readme plugin version
 
@@ -31,7 +31,7 @@ In a module:
   package MyModule;
 
   use Moo;
-  use MooX::NonOO;
+  use Class::NonOO;
 
   ...
 
@@ -88,11 +88,11 @@ of the class as the first argument.
 
 =cut
 
-our @EXPORT = qw/ as_function _MooX_NonOO_instance /;
+our @EXPORT = qw/ as_function _Class_NonOO_instance /;
 
-sub _MooX_NonOO_instance {
+sub _Class_NonOO_instance {
     my $class = shift;
-    state $symbol = '$_MooX_NonOO';
+    state $symbol = '$_Class_NonOO';
     my $stash = Package::Stash->new($class);
     if (my $instance = $stash->get_symbol($symbol)) {
       return ${$instance};
@@ -126,7 +126,7 @@ sub as_function {
                     return $method->(@_);
                 }
                 else {
-                    state $self = $caller->_MooX_NonOO_instance(@args);
+                    state $self = $caller->_Class_NonOO_instance(@args);
                     return $self->$method(@_);
                 }
             };

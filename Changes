@@ -1,6 +1,12 @@
 Revision history for {{$dist->name}}
 
 {{$NEXT}}
+  [Incompatible Changes]
+  - Renamed module to Class::NonOO, since it does not actually require
+    Moo.
+
+  [Bug Fixes]
+  - Fixed bad code in the tests.
 
 v0.1.0    2015-01-11 01:07:06+00:00 Europe/London
   - Initial version.
