@@ -2,10 +2,10 @@ package Class::NonOO;
 
 # ABSTRACT: Use methods as functions with an implicit singleton
 
+use v5.10.1;
+
 use strict;
 use warnings;
-
-use feature qw/ state /;
 
 use Exporter qw/ import /;
 use Package::Stash;
