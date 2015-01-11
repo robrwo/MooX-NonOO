@@ -18,6 +18,46 @@ BEGIN {
     *{'instance'} = \&MooX::Singleton::instance;
 }
 
+=head1 NAME
+
+MooX::NonOO - Use Moo methods as functions with an implicit singleton
+
+=head1 SYNOPSYS
+
+In a module:
+
+  package MyModule;
+
+  use Moo;
+  use MooX::NonOO;
+
+  ...
+
+  sub my_method {
+     my ($self, @args) = @_;
+     ...
+  }
+
+  as_function(
+    methods => [ 'my_method' ], # methods to export
+    args    => [ ],             # constructor args
+  );
+
+The module can be be used with a function calling style:
+
+  use MyModule;
+
+  ...
+
+  my_method(@args);
+
+=head1 DESCRIPTION
+
+This module allows you to turn a class into a module that exports
+methods as functions that use an implicit singleton.
+
+=cut
+
 our @EXPORT = qw/ as_function instance /;
 
 sub as_function {
