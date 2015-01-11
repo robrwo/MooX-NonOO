@@ -10,6 +10,7 @@ subtest 'oo' => sub {
   is $f->baz, 2;
   is $f->bar(3), 3;
   is $f->baz, 4;
+  is_deeply [ $f->boop ], [ 3, 4 ];
 };
 
 subtest 'non-oo' => sub {
@@ -17,6 +18,7 @@ subtest 'non-oo' => sub {
   is baz(), 6;
   is bar(3), 3;
   is baz(), 4;
+  is_deeply [ boop() ], [ 3, 4 ];
 };
 
 done_testing;
