@@ -1,5 +1,7 @@
 package MooX::NonOO;
 
+# ABSTRACT: Use Moo methods as functions with an implicit singleton
+
 use strict;
 use warnings;
 
