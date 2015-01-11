@@ -39,8 +39,8 @@ In a module:
   }
 
   as_function(
-    methods => [ 'my_method' ], # methods to export
-    args    => [ ],             # constructor args
+    export => [ 'my_method' ], # methods to export
+    args   => [ ],             # constructor args
   );
 
 The module can be be used with a function calling style:
@@ -64,7 +64,7 @@ sub as_function {
     my %opts = @_;
 
     my @args  = @{ $opts{args}    // [] };
-    my @names = @{ $opts{methods} // [] };
+    my @names = @{ $opts{export} // [] };
     foreach my $name (@names) {
 
         my ($caller) = caller;
