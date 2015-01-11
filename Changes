@@ -1,6 +1,6 @@
-Revision history for {{$dist->name}}
+Revision history for Class-NonOO
 
-{{$NEXT}}
+v0.2.0    2015-01-11 14:46:24+00:00 Europe/London
   [Incompatible Changes]
   - Renamed module to Class::NonOO, since it does not actually require
     Moo.
