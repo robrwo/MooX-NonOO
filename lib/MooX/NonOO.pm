@@ -13,12 +13,6 @@ use Scalar::Util qw/ blessed /;
 
 # RECOMMEND PREREQ: Package::Stash::XS 0
 
-BEGIN {
-    require MooX::Singleton;
-    no strict 'refs';
-    *{'instance'} = \&MooX::Singleton::instance;
-}
-
 =head1 NAME
 
 MooX::NonOO - Use Moo methods as functions with an implicit singleton
@@ -39,10 +33,9 @@ In a module:
      ...
   }
 
-  as_function(
+  as_function
     export => [ 'my_method' ], # methods to export
-    args   => [ ],             # constructor args
-  );
+    args   => [ ];             # constructor args
 
 The module can be be used with a function calling style:
 
@@ -57,9 +50,38 @@ The module can be be used with a function calling style:
 This module allows you to turn a class into a module that exports
 methods as functions that use an implicit singleton.
 
+=head1 EXPORTS
+
+=head2 C<as_function>
+
+  as_function
+    exports => \@methods,
+    args    => \@args;
+
+This wraps methods in a function that checks the first argument. If
+the argument is an instance of the class, then it assumes it is a
+normal method call.  Otherwise it assumes it is a function call, and
+it calls the method with the singleton instance.
+
+Note that this will not work properly on methods that take an instance
+of the class as the first argument.
+
 =cut
 
-our @EXPORT = qw/ as_function instance /;
+our @EXPORT = qw/ as_function _MooX_NonOO_instance /;
+
+sub _MooX_NonOO_instance {
+    my $class = shift;
+    state $symbol = '$_MooX_NonOO';
+    my $stash = Package::Stash->new($class);
+    if (my $instance = $stash->get_symbol($symbol)) {
+      return ${$instance};
+    } else {
+      my $instance = $class->new(@_);
+      $stash->add_symbol($symbol, \$instance);
+      return $instance;
+    }
+}
 
 sub as_function {
     my %opts = @_;
@@ -84,7 +106,7 @@ sub as_function {
                     return $method->(@_);
                 }
                 else {
-                    state $self = $caller->instance(@args);
+                    state $self = $caller->_MooX_NonOO_instance(@args);
                     return $self->$method(@_);
                 }
             };
