@@ -4,7 +4,7 @@ Class::NonOO - Use methods as functions with an implicit singleton
 
 =head1 VERSION
 
-v0.2.0
+v0.3.0
 
 =head1 SYNOPSYS
 
@@ -40,11 +40,13 @@ L<How to install CPAN modules|http://www.cpan.org/modules/INSTALL.html>.
 
 =head2 Required Modules
 
-This distribution requires Perl v5.9.3.
+This distribution requires Perl v5.10.1.
 
 This distribution requires the following modules:
 
 =over 4
+
+=item * L<List::MoreUtils>
 
 =item * L<Package::Stash>
 
@@ -62,13 +64,31 @@ This distribution recommends the following modules:
 
 =head1 RECENT CHANGES
 
-=head2 Bug Fixes
+=head2 Documentation
 
 =over 4
 
 =item * 
 
-Fixed bad code in the tests.
+Added old module name to Changes.
+
+=item * 
+
+Fixed typo in POD.
+
+=back
+
+=head2 Enhancements
+
+=over 4
+
+=item * 
+
+Added support for @EXPORT_OK and %EXPORT_TAGS.
+
+=item * 
+
+Added namespace segregation.
 
 =back
 
@@ -78,7 +98,17 @@ Fixed bad code in the tests.
 
 =item * 
 
-Renamed module to Class::NonOO, since it does not actually require Moo.
+Bumped minimum Perl to v5.10.1.
+
+=back
+
+=head2 Other Changes
+
+=over 4
+
+=item * 
+
+Minor code reorganization.
 
 =back
 
@@ -94,8 +124,11 @@ methods as functions that use an implicit singleton.
 =head2 C<as_function>
 
   as_function
-    exports => \@methods,
-    args    => \@args;
+    export      => [ ... ], # @EXPORT
+    export_ok   => [ ... ], # @EXPORT_OK (optional)
+    export_tags => { ... }, # %EXPORT_TAGS (optional)
+    args        => [ ... ], # constructor args (optional)
+    global      => 0;       # no global state (default)
 
 This wraps methods in a function that checks the first argument. If
 the argument is an instance of the class, then it assumes it is a
@@ -104,6 +137,22 @@ it calls the method with the singleton instance.
 
 Note that this will not work properly on methods that take an instance
 of the class as the first argument.
+
+By default, there is no global state. That means that there is a
+different implicit singleton for each namespace.  This offers some
+protection when the state is changed in one module, so that it does
+not affect the state in another module.
+
+If you want to enable global state, you can set C<global> to a true
+value.  This is not recommended for CPAN modules.
+
+You might work around this by using something like
+
+  local %MyClass::_DEFAULT_SINGLETONS;
+
+but this is not recommended.  If you need to modify state and share it
+across modules, you should be passing around individual objects
+instead of singletons.
 
 =head1 AUTHOR
 
