@@ -72,22 +72,6 @@ methods as functions that use an implicit singleton.
 
 =head1 EXPORTS
 
-=head2 C<as_function>
-
-  as_function
-    export      => [ ... ], # @EXPORT
-    export_ok   => [ ... ], # @EXPORT_OK (optional)
-    export_tags => { ... }, # %EXPORT_TAGS (optional)
-    args        => [ ... ]; # constructor args (optional)
-
-This wraps methods in a function that checks the first argument. If
-the argument is an instance of the class, then it assumes it is a
-normal method call.  Otherwise it assumes it is a function call, and
-it calls the method with the singleton instance.
-
-Note that this will not work properly on methods that take an instance
-of the class as the first argument.
-
 =cut
 
 our @EXPORT = qw/ as_function _Class_NonOO_instance /;
@@ -105,6 +89,24 @@ sub _Class_NonOO_instance {
         return $instance;
     }
 }
+
+=head2 C<as_function>
+
+  as_function
+    export      => [ ... ], # @EXPORT
+    export_ok   => [ ... ], # @EXPORT_OK (optional)
+    export_tags => { ... }, # %EXPORT_TAGS (optional)
+    args        => [ ... ]; # constructor args (optional)
+
+This wraps methods in a function that checks the first argument. If
+the argument is an instance of the class, then it assumes it is a
+normal method call.  Otherwise it assumes it is a function call, and
+it calls the method with the singleton instance.
+
+Note that this will not work properly on methods that take an instance
+of the class as the first argument.
+
+=cut
 
 sub as_function {
     my %opts = @_;
