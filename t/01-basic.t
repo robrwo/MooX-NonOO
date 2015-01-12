@@ -2,7 +2,7 @@ use Test::Most;
 
 use lib 't/lib';
 
-use_ok 'Foo';
+use Foo ':all';
 
 subtest 'oo' => sub {
   my $f = Foo->new;

@@ -8,6 +8,7 @@ use strict;
 use warnings;
 
 use Exporter qw/ import /;
+use List::MoreUtils qw/ uniq /;
 use Package::Stash;
 use Scalar::Util qw/ blessed /;
 
@@ -74,8 +75,10 @@ methods as functions that use an implicit singleton.
 =head2 C<as_function>
 
   as_function
-    exports => \@methods,
-    args    => \@args;
+    export      => [ ... ], # @EXPORT
+    export_ok   => [ ... ], # @EXPORT_OK (optional)
+    export_tags => { ... }, # %EXPORT_TAGS (optional)
+    args        => [ ... ]; # constructor args (optional)
 
 This wraps methods in a function that checks the first argument. If
 the argument is an instance of the class, then it assumes it is a
@@ -93,32 +96,39 @@ sub _Class_NonOO_instance {
     my $class = shift;
     state $symbol = '$_Class_NonOO';
     my $stash = Package::Stash->new($class);
-    if (my $instance = $stash->get_symbol($symbol)) {
-      return ${$instance};
-    } else {
-      my $instance = $class->new(@_);
-      $stash->add_symbol($symbol, \$instance);
-      return $instance;
+    if ( my $instance = $stash->get_symbol($symbol) ) {
+        return ${$instance};
+    }
+    else {
+        my $instance = $class->new(@_);
+        $stash->add_symbol( $symbol, \$instance );
+        return $instance;
     }
 }
 
 sub as_function {
     my %opts = @_;
 
-    my @args  = @{ $opts{args}    // [] };
-    my @names = @{ $opts{export} // [] };
-    foreach my $name (@names) {
+    my @args        = @{ $opts{args}        // [] };
+    my @export      = @{ $opts{export}      // [] };
+    my @export_ok   = @{ $opts{export_ok}   // [] };
+    my %export_tags = %{ $opts{export_tags} // {} };
 
-        my ($caller) = caller;
-        my $stash = Package::Stash->new($caller);
+    my ($caller) = caller;
+    my $stash = Package::Stash->new($caller);
+
+    my $export      = $stash->get_or_add_symbol('@EXPORT');
+    my $export_ok   = $stash->get_or_add_symbol('@EXPORT_OK');
+    my $export_tags = $stash->get_or_add_symbol('%EXPORT_TAGS');
+
+    foreach
+      my $name ( uniq @export, @export_ok, map { @$_ } values %export_tags )
+    {
 
         $stash->add_symbol( '&import', \&Exporter::import );
 
         my $symbol = '&' . $name;
         if ( my $method = $stash->get_symbol($symbol) ) {
-
-            my $export    = $stash->get_or_add_symbol('@EXPORT');
-            my $export_ok = $stash->get_or_add_symbol('@EXPORT_OK');
 
             my $new = sub {
                 if ( blessed( $_[0] ) && $_[0]->isa($caller) ) {
@@ -131,13 +141,16 @@ sub as_function {
             };
             $stash->add_symbol( $symbol, $new );
 
-            push @{$export},    $name;
             push @{$export_ok}, $name;
         }
         else {
             die "No method named ${name}";
         }
     }
+
+    push @{$export}, $_ for @export;
+
+    $export_tags->{all} = $export_ok;
 }
 
 =head1 AUTHOR

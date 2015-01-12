@@ -4,8 +4,13 @@ Revision history for {{$dist->name}}
   [Documentation]
   - Added old module name to Changes.
 
+  - Fixed typo in POD.
+
   [Incompatible Changes]
   - Bumped minimum Perl to v5.10.1.
+
+  [Enhancements]
+  - Added support for @EXPORT_OK and %EXPORT_TAGS.
 
 v0.2.0    2015-01-11 14:46:24+00:00 Europe/London
   [Incompatible Changes]
