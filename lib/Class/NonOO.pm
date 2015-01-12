@@ -79,7 +79,7 @@ our @EXPORT = qw/ as_function _Class_NonOO_instance /;
 sub _Class_NonOO_instance {
     my $class = shift;
     my $user  = shift;
-    state $symbol = '%_Class_NonOO';
+    state $symbol = '%_DEFAULT_SINGLETONS';
     my $stash = Package::Stash->new($class);
     my $instances = $stash->get_or_add_symbol($symbol);
     return $instances->{$user} //= $class->new(@_);
@@ -103,13 +103,20 @@ Note that this will not work properly on methods that take an instance
 of the class as the first argument.
 
 By default, there is no global state. That means that there is a
-different state for each namespace.  This offers some protection when
-the state is changed in one module, so that it does not affect the
-state in another module.
+different implicit singleton for each namespace.  This offers some
+protection when the state is changed in one module, so that it does
+not affect the state in another module.
 
-If you want to enable global state, you can set global to a true value
-(which reduces memory usage) but state changes in one module can
-affect other modules.
+If you want to enable global state, you can set C<global> to a true
+value.  This is not recommended for CPAN modules.
+
+You might work around this by using something like
+
+  local %MyClass::_DEFAULT_SINGLETONS;
+
+but this is not recommended.  If you need to modify state and share it
+across modules, you should be passing around individual objects
+instead of singletons.
 
 =cut
 

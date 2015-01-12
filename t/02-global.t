@@ -46,6 +46,25 @@ subtest 'oo' => sub {
   };
 }
 
+{
+  package state3;
+
+  use Test::Most;
+
+  use lib 't/lib';
+  use FooGlobal ':all';
+
+  local %FooGlobal::_DEFAULT_SINGLETONS;
+
+  subtest 'non-oo namespace state2' => sub {
+    is bar(), 5;
+    is baz(), 6;
+    is bar(7), 7;
+    is baz(), 8;
+    is_deeply [ boop() ], [ 7, 8 ];
+  };
+}
+
 done_testing;
 
 
