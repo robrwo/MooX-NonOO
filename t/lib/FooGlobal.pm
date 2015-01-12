@@ -1,4 +1,4 @@
-package Foo;
+package FooGlobal;
 
 use Class::NonOO;
 
@@ -31,6 +31,7 @@ sub boop {
 }
 
 as_function
+  global    => 1,
   export    => [qw/ bar baz /],
   export_ok => [qw/ boop /],
   args      => [ bar => 5 ];

@@ -2,18 +2,19 @@ package Class::NonOO;
 
 # ABSTRACT: Use methods as functions with an implicit singleton
 
+use v5.10.1;
+
 use strict;
 use warnings;
 
-use feature qw/ state /;
-
 use Exporter qw/ import /;
+use List::MoreUtils qw/ uniq /;
 use Package::Stash;
 use Scalar::Util qw/ blessed /;
 
 {
     use version;
-    $Class::NonOO::VERSION = version->declare('v0.2.0');
+    $Class::NonOO::VERSION = version->declare('v0.2.1');
 }
 
 # RECOMMEND PREREQ: Package::Stash::XS 0
@@ -71,11 +72,27 @@ methods as functions that use an implicit singleton.
 
 =head1 EXPORTS
 
+=cut
+
+our @EXPORT = qw/ as_function _Class_NonOO_instance /;
+
+sub _Class_NonOO_instance {
+    my $class = shift;
+    my $user  = shift;
+    state $symbol = '%_DEFAULT_SINGLETONS';
+    my $stash = Package::Stash->new($class);
+    my $instances = $stash->get_or_add_symbol($symbol);
+    return $instances->{$user} //= $class->new(@_);
+}
+
 =head2 C<as_function>
 
   as_function
-    exports => \@methods,
-    args    => \@args;
+    export      => [ ... ], # @EXPORT
+    export_ok   => [ ... ], # @EXPORT_OK (optional)
+    export_tags => { ... }, # %EXPORT_TAGS (optional)
+    args        => [ ... ], # constructor args (optional)
+    global      => 0;       # no global state (default)
 
 This wraps methods in a function that checks the first argument. If
 the argument is an instance of the class, then it assumes it is a
@@ -85,59 +102,71 @@ it calls the method with the singleton instance.
 Note that this will not work properly on methods that take an instance
 of the class as the first argument.
 
+By default, there is no global state. That means that there is a
+different implicit singleton for each namespace.  This offers some
+protection when the state is changed in one module, so that it does
+not affect the state in another module.
+
+If you want to enable global state, you can set C<global> to a true
+value.  This is not recommended for CPAN modules.
+
+You might work around this by using something like
+
+  local %MyClass::_DEFAULT_SINGLETONS;
+
+but this is not recommended.  If you need to modify state and share it
+across modules, you should be passing around individual objects
+instead of singletons.
+
 =cut
-
-our @EXPORT = qw/ as_function _Class_NonOO_instance /;
-
-sub _Class_NonOO_instance {
-    my $class = shift;
-    state $symbol = '$_Class_NonOO';
-    my $stash = Package::Stash->new($class);
-    if (my $instance = $stash->get_symbol($symbol)) {
-      return ${$instance};
-    } else {
-      my $instance = $class->new(@_);
-      $stash->add_symbol($symbol, \$instance);
-      return $instance;
-    }
-}
 
 sub as_function {
     my %opts = @_;
 
-    my @args  = @{ $opts{args}    // [] };
-    my @names = @{ $opts{export} // [] };
-    foreach my $name (@names) {
+    my $global      = $opts{global} // 0;
+    my @args        = @{ $opts{args}        // [] };
+    my @export      = @{ $opts{export}      // [] };
+    my @export_ok   = @{ $opts{export_ok}   // [] };
+    my %export_tags = %{ $opts{export_tags} // {} };
 
-        my ($caller) = caller;
-        my $stash = Package::Stash->new($caller);
+    my ($caller) = caller;
+    my $stash = Package::Stash->new($caller);
+
+    my $export      = $stash->get_or_add_symbol('@EXPORT');
+    my $export_ok   = $stash->get_or_add_symbol('@EXPORT_OK');
+    my $export_tags = $stash->get_or_add_symbol('%EXPORT_TAGS');
+
+    foreach
+      my $name ( uniq @export, @export_ok, map { @$_ } values %export_tags )
+    {
 
         $stash->add_symbol( '&import', \&Exporter::import );
 
         my $symbol = '&' . $name;
         if ( my $method = $stash->get_symbol($symbol) ) {
 
-            my $export    = $stash->get_or_add_symbol('@EXPORT');
-            my $export_ok = $stash->get_or_add_symbol('@EXPORT_OK');
-
             my $new = sub {
                 if ( blessed( $_[0] ) && $_[0]->isa($caller) ) {
                     return $method->(@_);
                 }
                 else {
-                    state $self = $caller->_Class_NonOO_instance(@args);
+                    my $user = $global ? 'default' : caller;
+                    my $self = $caller->_Class_NonOO_instance( $user, @args );
                     return $self->$method(@_);
                 }
             };
             $stash->add_symbol( $symbol, $new );
 
-            push @{$export},    $name;
             push @{$export_ok}, $name;
         }
         else {
             die "No method named ${name}";
         }
     }
+
+    push @{$export}, $_ for @export;
+
+    $export_tags->{all} = $export_ok;
 }
 
 =head1 AUTHOR

@@ -1,4 +1,21 @@
-Revision history for Class-NonOO
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+  [Documentation]
+  - Added old module name to Changes.
+
+  - Fixed typo in POD.
+
+  [Incompatible Changes]
+  - Bumped minimum Perl to v5.10.1.
+
+  [Enhancements]
+  - Added support for @EXPORT_OK and %EXPORT_TAGS.
+
+  - Added namespace segregation.
+
+  [Other Changes]
+  - Minor code reorganization.
 
 v0.2.0    2015-01-11 14:46:24+00:00 Europe/London
   [Incompatible Changes]
@@ -9,4 +26,4 @@ v0.2.0    2015-01-11 14:46:24+00:00 Europe/London
   - Fixed bad code in the tests.
 
 v0.1.0    2015-01-11 01:07:06+00:00 Europe/London
-  - Initial version.
+  - Initial version of MooX::NonOO.
