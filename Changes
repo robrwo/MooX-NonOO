@@ -12,6 +12,8 @@ Revision history for {{$dist->name}}
   [Enhancements]
   - Added support for @EXPORT_OK and %EXPORT_TAGS.
 
+  - Added namespace segregation.
+
   [Other Changes]
   - Minor code reorganization.
 

@@ -78,16 +78,11 @@ our @EXPORT = qw/ as_function _Class_NonOO_instance /;
 
 sub _Class_NonOO_instance {
     my $class = shift;
-    state $symbol = '$_Class_NonOO';
+    my $user  = shift;
+    state $symbol = '%_Class_NonOO';
     my $stash = Package::Stash->new($class);
-    if ( my $instance = $stash->get_symbol($symbol) ) {
-        return ${$instance};
-    }
-    else {
-        my $instance = $class->new(@_);
-        $stash->add_symbol( $symbol, \$instance );
-        return $instance;
-    }
+    my $instances = $stash->get_or_add_symbol($symbol);
+    return $instances->{$user} //= $class->new(@_);
 }
 
 =head2 C<as_function>
@@ -96,7 +91,8 @@ sub _Class_NonOO_instance {
     export      => [ ... ], # @EXPORT
     export_ok   => [ ... ], # @EXPORT_OK (optional)
     export_tags => { ... }, # %EXPORT_TAGS (optional)
-    args        => [ ... ]; # constructor args (optional)
+    args        => [ ... ], # constructor args (optional)
+    global      => 0;       # no global state (default)
 
 This wraps methods in a function that checks the first argument. If
 the argument is an instance of the class, then it assumes it is a
@@ -106,11 +102,21 @@ it calls the method with the singleton instance.
 Note that this will not work properly on methods that take an instance
 of the class as the first argument.
 
+By default, there is no global state. That means that there is a
+different state for each namespace.  This offers some protection when
+the state is changed in one module, so that it does not affect the
+state in another module.
+
+If you want to enable global state, you can set global to a true value
+(which reduces memory usage) but state changes in one module can
+affect other modules.
+
 =cut
 
 sub as_function {
     my %opts = @_;
 
+    my $global      = $opts{global} // 0;
     my @args        = @{ $opts{args}        // [] };
     my @export      = @{ $opts{export}      // [] };
     my @export_ok   = @{ $opts{export_ok}   // [] };
@@ -137,7 +143,8 @@ sub as_function {
                     return $method->(@_);
                 }
                 else {
-                    state $self = $caller->_Class_NonOO_instance(@args);
+                    my $user = $global ? 'default' : caller;
+                    my $self = $caller->_Class_NonOO_instance( $user, @args );
                     return $self->$method(@_);
                 }
             };
