@@ -68,7 +68,8 @@ L<How to install CPAN modules|http://www.cpan.org/modules/INSTALL.html>.
 =head1 DESCRIPTION
 
 This module allows you to turn a class into a module that exports
-methods as functions that use an implicit singleton.
+methods as functions that use an implicit singleton.  This allows you
+to provide a "hybrid" object-oriented/functional interface.
 
 =head1 EXPORTS
 

@@ -4,6 +4,8 @@ Revision history for {{$dist->name}}
   [Documentation]
   - Added SEE ALSO section for similar modules.
 
+  - Minor rewording of the description.
+
 v0.3.0    2015-01-12 19:15:42+00:00 Europe/London
   [Documentation]
   - Added old module name to Changes.
