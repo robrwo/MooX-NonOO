@@ -169,6 +169,11 @@ sub as_function {
     $export_tags->{all} = $export_ok;
 }
 
+
+=head1 SEE ALSO
+
+L<Class::Exporter> is a similar module.
+
 =head1 AUTHOR
 
 Robert Rothenberg, C<< <rrwo at cpan.org> >>
