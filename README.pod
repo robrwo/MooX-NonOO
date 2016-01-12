@@ -4,7 +4,7 @@ Class::NonOO - Use methods as functions with an implicit singleton
 
 =head1 VERSION
 
-v0.3.0
+v0.4.0
 
 =head1 SYNOPSYS
 
@@ -64,17 +64,27 @@ This distribution recommends the following modules:
 
 =head1 RECENT CHANGES
 
+=head2 Bug Fixes
+
+=over 4
+
+=item * 
+
+Duplicate symbols are not added to @EXPORT_OK.
+
+=back
+
 =head2 Documentation
 
 =over 4
 
 =item * 
 
-Added old module name to Changes.
+Added SEE ALSO section for similar modules.
 
 =item * 
 
-Fixed typo in POD.
+Minor rewording of the description.
 
 =back
 
@@ -84,31 +94,7 @@ Fixed typo in POD.
 
 =item * 
 
-Added support for @EXPORT_OK and %EXPORT_TAGS.
-
-=item * 
-
-Added namespace segregation.
-
-=back
-
-=head2 Incompatible Changes
-
-=over 4
-
-=item * 
-
-Bumped minimum Perl to v5.10.1.
-
-=back
-
-=head2 Other Changes
-
-=over 4
-
-=item * 
-
-Minor code reorganization.
+Default export options come from the export variables, if they are defined.
 
 =back
 
@@ -117,7 +103,8 @@ See the F<Changes> file for a longer revision history.
 =head1 DESCRIPTION
 
 This module allows you to turn a class into a module that exports
-methods as functions that use an implicit singleton.
+methods as functions that use an implicit singleton.  This allows you
+to provide a "hybrid" object-oriented/functional interface.
 
 =head1 EXPORTS
 
@@ -134,6 +121,11 @@ This wraps methods in a function that checks the first argument. If
 the argument is an instance of the class, then it assumes it is a
 normal method call.  Otherwise it assumes it is a function call, and
 it calls the method with the singleton instance.
+
+If the C<export> option is omitted, it will default to the contents of
+the C<@EXPORT> variable. The same holds for the C<export_ok> and
+C<export_tags> options and the C<@EXPORT_OK> and C<%EXPORT_TAGS>
+variables, respectively.
 
 Note that this will not work properly on methods that take an instance
 of the class as the first argument.
@@ -153,6 +145,10 @@ You might work around this by using something like
 but this is not recommended.  If you need to modify state and share it
 across modules, you should be passing around individual objects
 instead of singletons.
+
+=head1 SEE ALSO
+
+L<Class::Exporter> is a similar module.
 
 =head1 AUTHOR
 
