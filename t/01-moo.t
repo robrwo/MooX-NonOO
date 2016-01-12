@@ -1,8 +1,8 @@
 use Test::Most;
 
 BEGIN {
-  eval { require Moo; }
-    or plan skip_all => 'Moo required for test';
+  eval { require Moo }
+    or plan skip_all => 'Moo 1.001000 required for test';
 }
 
 use lib 't/lib';
@@ -27,5 +27,3 @@ subtest 'non-oo' => sub {
 };
 
 done_testing;
-
-
