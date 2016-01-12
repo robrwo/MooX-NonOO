@@ -14,7 +14,7 @@ use Scalar::Util qw/ blessed /;
 
 {
     use version;
-    $Class::NonOO::VERSION = version->declare('v0.3.0');
+    $Class::NonOO::VERSION = version->declare('v0.4.0');
 }
 
 # RECOMMEND PREREQ: Package::Stash::XS 0
