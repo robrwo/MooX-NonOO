@@ -14,7 +14,7 @@ use Scalar::Util qw/ blessed /;
 
 {
     use version;
-    $Class::NonOO::VERSION = version->declare('v0.3.0');
+    $Class::NonOO::VERSION = version->declare('v0.4.0');
 }
 
 # RECOMMEND PREREQ: Package::Stash::XS 0
@@ -68,7 +68,8 @@ L<How to install CPAN modules|http://www.cpan.org/modules/INSTALL.html>.
 =head1 DESCRIPTION
 
 This module allows you to turn a class into a module that exports
-methods as functions that use an implicit singleton.
+methods as functions that use an implicit singleton.  This allows you
+to provide a "hybrid" object-oriented/functional interface.
 
 =head1 EXPORTS
 
@@ -99,6 +100,11 @@ the argument is an instance of the class, then it assumes it is a
 normal method call.  Otherwise it assumes it is a function call, and
 it calls the method with the singleton instance.
 
+If the C<export> option is omitted, it will default to the contents of
+the C<@EXPORT> variable. The same holds for the C<export_ok> and
+C<export_tags> options and the C<@EXPORT_OK> and C<%EXPORT_TAGS>
+variables, respectively.
+
 Note that this will not work properly on methods that take an instance
 of the class as the first argument.
 
@@ -123,18 +129,20 @@ instead of singletons.
 sub as_function {
     my %opts = @_;
 
-    my $global      = $opts{global} // 0;
-    my @args        = @{ $opts{args}        // [] };
-    my @export      = @{ $opts{export}      // [] };
-    my @export_ok   = @{ $opts{export_ok}   // [] };
-    my %export_tags = %{ $opts{export_tags} // {} };
-
     my ($caller) = caller;
     my $stash = Package::Stash->new($caller);
 
     my $export      = $stash->get_or_add_symbol('@EXPORT');
     my $export_ok   = $stash->get_or_add_symbol('@EXPORT_OK');
     my $export_tags = $stash->get_or_add_symbol('%EXPORT_TAGS');
+
+    my $global      = $opts{global} // 0;
+    my @args        = @{ $opts{args}        // [] };
+    my @export      = @{ $opts{export}      // $export };
+    my @export_ok   = @{ $opts{export_ok}   // $export_ok };
+    my %export_tags = %{ $opts{export_tags} // $export_tags };
+
+    my %in_export_ok = map { $_ => 1 } @{$export_ok};
 
     foreach
       my $name ( uniq @export, @export_ok, map { @$_ } values %export_tags )
@@ -157,7 +165,7 @@ sub as_function {
             };
             $stash->add_symbol( $symbol, $new );
 
-            push @{$export_ok}, $name;
+            push @{$export_ok}, $name unless $in_export_ok{$name};
         }
         else {
             die "No method named ${name}";
@@ -168,6 +176,11 @@ sub as_function {
 
     $export_tags->{all} = $export_ok;
 }
+
+
+=head1 SEE ALSO
+
+L<Class::Exporter> is a similar module.
 
 =head1 AUTHOR
 

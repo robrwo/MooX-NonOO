@@ -1,4 +1,17 @@
-Revision history for Class-NonOO
+Revision history for {{$dist->name}}
+
+{{$NEXT}}
+  [Documentation]
+  - Added SEE ALSO section for similar modules.
+
+  - Minor rewording of the description.
+
+  [Enhancements]
+  - Default export options come from the export variables, if they are
+    defined.
+
+  [Bug Fixes]
+  - Duplicate symbols are not added to @EXPORT_OK.
 
 v0.3.0    2015-01-12 19:15:42+00:00 Europe/London
   [Documentation]
