@@ -3,7 +3,7 @@ package MooFoo;
 use Moo;
 use Class::NonOO;
 
-has bar => ( is => 'rw', default => 1 );
+has bar => ( is => 'rw', default => sub { 1 } );
 
 sub baz {
   my ($self) = @_;
