@@ -8,7 +8,7 @@ use strict;
 use warnings;
 
 use Exporter qw/ import /;
-use List::MoreUtils qw/ uniq /;
+use List::AllUtils qw/ uniq /;
 use Package::Stash;
 use Scalar::Util qw/ blessed /;
 

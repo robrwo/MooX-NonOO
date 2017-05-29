@@ -1,5 +1,8 @@
 Revision history for Class-NonOO
 
+  [Enhancements]
+  - Changed prerequisite from List::MoreUtils to List::AllUtils.
+
   [Documentation]
   - Update copyright year to 2017
 
