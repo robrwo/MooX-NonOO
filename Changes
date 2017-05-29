@@ -1,6 +1,9 @@
-Revision history for {{$dist->name}}
+Revision history for Class-NonOO
 
-{{$NEXT}}
+  [Documentation]
+  - Update copyright year to 2017
+
+v0.4.1    2017-05-29 13:53:22+01:00 Europe/London
   [Documentation]
   - Update copyright year to 2016.
 
